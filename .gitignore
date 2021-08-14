@@ -35,3 +35,4 @@ build/
 ### VS Code ###
 .vscode/
 icons/
+json_files/

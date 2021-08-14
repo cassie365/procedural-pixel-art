@@ -1,15 +1,18 @@
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.List;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        /*
-        System.out.println("START");
+        processJson("wheat_whip");
+
         Map<String,Color> colorMap = new HashMap();
         colorMap.put("blade_highlight",Color.decode("#b8b5b9"));
         colorMap.put("blade_base",Color.decode("#868188"));
@@ -19,32 +22,108 @@ public class Main {
         colorMap.put("jewel",Color.decode("#2555a6"));
         colorMap.put("outline",Color.decode("#45444f"));
 
-        BufferedImage bufferedImage = new BufferedImage(15, 15, BufferedImage.TYPE_4BYTE_ABGR);
-        int[] hiltCoords = new int[2];
-        hiltCoords[0] = 9;
-        hiltCoords[1] = 8;
-        genGuard(hiltCoords,bufferedImage,3,3,colorMap);
 
-        File file = new File("icons/hilt.png");
-        ImageIO.write(bufferedImage, "png", file);*/
 
-        genMorningstar(12);
+        genSet("wheat", wheatColor());
+        genSet("carrot", carrotColor());
+        genSet("potato", potatoColor());
+        genSet("beetroot", beetrootColor());
     }
 
-    public static void genSword(int amt) throws IOException {
-        Map<String,Color> colorMap = new HashMap();
-        colorMap.put("blade_highlight",Color.decode("#b8b5b9"));
-        colorMap.put("blade_base",Color.decode("#868188"));
-        colorMap.put("blade_shadow",Color.decode("#646365"));
-        colorMap.put("hilt_base",Color.decode("#a77b5b"));
-        colorMap.put("hilt_shadow",Color.decode("#80493a"));
-        colorMap.put("jewel",Color.decode("#2555a6"));
-        colorMap.put("outline",Color.decode("#45444f"));
+    public static void processJson(String filename) throws FileNotFoundException {
+        try {
+            // create Gson instance
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
+            // create a reader
+            Reader reader = Files.newBufferedReader(Paths.get("json_files/base.json"));
+
+            // convert JSON file to map
+            Map<String, Map<String, String>> map = gson.fromJson(reader, Map.class);
+            Map<String,String> textures = new HashMap<>();
+            textures.put("layer0","edibleweapons:item/"+filename);
+
+            map.put("textures",textures);
+
+            // close reader
+            reader.close();
+
+            // create a writer
+            Writer writer = new FileWriter("json_files/"+filename+".json");
+
+            // convert map to JSON File
+            gson.toJson(map, writer);
+
+            // close the writer
+            writer.close();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static Map<String,Color> wheatColor(){
+        Map<String,Color> colorMap = new HashMap();
+        colorMap.put("blade_highlight",Color.decode("#90866a"));
+        colorMap.put("blade_base",Color.decode("#685f4e"));
+        colorMap.put("blade_shadow",Color.decode("#4e493a"));
+        colorMap.put("hilt_base",Color.decode("#825b34"));
+        colorMap.put("hilt_shadow",Color.decode("#643621"));
+        colorMap.put("jewel",Color.decode("#ffcc2c"));
+        colorMap.put("outline",Color.decode("#565138"));
+        return colorMap;
+    }
+    public static Map<String,Color> carrotColor(){
+        Map<String,Color> colorMap = new HashMap();
+        colorMap.put("blade_highlight",Color.decode("#b88249"));
+        colorMap.put("blade_base",Color.decode("#865d35"));
+        colorMap.put("blade_shadow",Color.decode("#644728"));
+        colorMap.put("hilt_base",Color.decode("#a75823"));
+        colorMap.put("hilt_shadow",Color.decode("#803517"));
+        colorMap.put("jewel",Color.decode("#33be30"));
+        colorMap.put("outline",Color.decode("#752802"));
+        return colorMap;
+    }
+
+    public static Map<String,Color> potatoColor(){
+        Map<String,Color> colorMap = new HashMap();
+        colorMap.put("blade_highlight",Color.decode("#a78f69"));
+        colorMap.put("blade_base",Color.decode("#79664d"));
+        colorMap.put("blade_shadow",Color.decode("#5b4e39"));
+        colorMap.put("hilt_base",Color.decode("#976134"));
+        colorMap.put("hilt_shadow",Color.decode("#743a21"));
+        colorMap.put("jewel",Color.decode("#bdd855"));
+        colorMap.put("outline",Color.decode("#6d3701"));
+        return colorMap;
+    }
+
+    public static Map<String,Color> beetrootColor(){
+        Map<String,Color> colorMap = new HashMap();
+        colorMap.put("blade_highlight",Color.decode("#8e5458"));
+        colorMap.put("blade_base",Color.decode("#683c41"));
+        colorMap.put("blade_shadow",Color.decode("#4d2e30"));
+        colorMap.put("hilt_base",Color.decode("#81392c"));
+        colorMap.put("hilt_shadow",Color.decode("#63221c"));
+        colorMap.put("jewel",Color.decode("#3a6a68"));
+        colorMap.put("outline",Color.decode("#4a1d17"));
+        return colorMap;
+    }
+
+    public static void genSet(String type, Map<String, Color> colorMap) throws IOException {
+        genSword(type,1,colorMap);
+        genMace(type,1,colorMap);
+        genStaff(type,1,colorMap);
+        genDagger(type,1,colorMap);
+        genSpear(type,1,colorMap);
+        genRapier(type,1,colorMap);
+        genMorningstar(type,1,colorMap);
+    }
+
+    public static void genSword(String type,int amt, Map<String, Color> colorMap) throws IOException {
         for(int i = 0; i<amt; i++){
 
-            int width = 15;
-            int height = 15;
+            int width = 16;
+            int height = 16;
             int[][] pixelMap = new int[width][height];
 
             BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
@@ -55,25 +134,114 @@ public class Main {
 
             genBlade(guardLoc, bufferedImage,8,10,1,colorMap);
 
-            File file = new File("icons/sword_"+i+".png");
+            colorRamp(bufferedImage,width,height);
+
+            File file;
+            if(amt==1){
+                file = new File("icons/"+type+"_long_sword.png");
+            } else{
+                file = new File("icons/"+type+"_long_sword_"+i+".png");
+            }
             ImageIO.write(bufferedImage, "png", file);
         }
+
+        processJson(type+"_long_sword");
     }
 
-    public static void genMace(int amt) throws IOException {
-        Map<String,Color> colorMap = new HashMap();
-        colorMap.put("blade_highlight",Color.decode("#b8b5b9"));
-        colorMap.put("blade_base",Color.decode("#868188"));
-        colorMap.put("blade_shadow",Color.decode("#646365"));
-        colorMap.put("hilt_base",Color.decode("#a77b5b"));
-        colorMap.put("hilt_shadow",Color.decode("#80493a"));
-        colorMap.put("jewel",Color.decode("#2555a6"));
-        colorMap.put("outline",Color.decode("#45444f"));
+    public static void genDagger(String type,int amt, Map<String, Color> colorMap) throws IOException {
 
         for(int i = 0; i<amt; i++){
 
-            int width = 15;
-            int height = 15;
+            int width = 16;
+            int height = 16;
+            int[][] pixelMap = new int[width][height];
+
+            BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+
+            int[] hiltCoords = genHilt(bufferedImage,4,4,colorMap);
+
+            int guardLoc = genGuard(hiltCoords,bufferedImage,1,3,colorMap);
+
+            genBlade(guardLoc, bufferedImage,4,6,1,colorMap);
+
+            colorRamp(bufferedImage,width,height);
+            File file;
+            if(amt==1){
+                file = new File("icons/"+type+"_dagger.png");
+            } else{
+                file = new File("icons/"+type+"_dagger_"+i+".png");
+            }
+
+            ImageIO.write(bufferedImage, "png", file);
+        }
+
+        processJson(type+"_dagger");
+    }
+
+    public static void genRapier(String type,int amt, Map<String, Color> colorMap) throws IOException {
+
+        for(int i = 0; i<amt; i++){
+
+            int width = 16;
+            int height = 16;
+            int[][] pixelMap = new int[width][height];
+
+            BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+
+            int[] hiltCoords = genHilt(bufferedImage,5,5,colorMap);
+
+            int guardLoc = genGuard(hiltCoords,bufferedImage,4,4,colorMap);
+
+            genBlade(guardLoc, bufferedImage,12,12,0,colorMap);
+
+            colorRamp(bufferedImage,width,height);
+
+            File file;
+            if(amt==1){
+                file = new File("icons/"+type+"_rapier.png");
+            } else{
+                file = new File("icons/"+type+"_rapier_"+i+".png");
+            }
+
+            ImageIO.write(bufferedImage, "png", file);
+        }
+
+        processJson(type+"_rapier");
+    }
+
+    public static void genStaff(String type,int amt, Map<String, Color> colorMap) throws IOException {
+
+        for(int i = 0; i<amt; i++){
+
+            int width = 16;
+            int height = 16;
+            int[][] pixelMap = new int[width][height];
+
+            BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+
+            int[] hiltCoords = genHilt(bufferedImage,12,14,colorMap);
+
+            colorRamp(bufferedImage,width,height);
+
+            File file;
+            if(amt==1){
+                file = new File("icons/"+type+"_staff.png");
+            } else{
+                file = new File("icons/"+type+"_staff_"+i+".png");
+            }
+
+            ImageIO.write(bufferedImage, "png", file);
+        }
+
+        processJson(type+"_staff");
+    }
+
+    public static void genMace(String type,int amt, Map<String, Color> colorMap) throws IOException {
+
+        for(int i = 0; i<amt; i++){
+
+            int width = 16;
+            int height = 16;
             int[][] pixelMap = new int[width][height];
 
             BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
@@ -82,25 +250,25 @@ public class Main {
 
             genMaceHead(hiltCoords[0], bufferedImage,colorMap);
 
-            File file = new File("icons/mace"+i+".png");
+            colorRamp(bufferedImage,width,height);
+
+            File file;
+            if(amt==1){
+                file = new File("icons/"+type+"_mace.png");
+            } else{
+                file = new File("icons/"+type+"_mace_"+i+".png");
+            }
             ImageIO.write(bufferedImage, "png", file);
         }
+        processJson(type+"_mace");
     }
 
-    public static void genMorningstar(int amt) throws IOException {
-        Map<String,Color> colorMap = new HashMap();
-        colorMap.put("blade_highlight",Color.decode("#b8b5b9"));
-        colorMap.put("blade_base",Color.decode("#868188"));
-        colorMap.put("blade_shadow",Color.decode("#646365"));
-        colorMap.put("hilt_base",Color.decode("#a77b5b"));
-        colorMap.put("hilt_shadow",Color.decode("#80493a"));
-        colorMap.put("jewel",Color.decode("#2555a6"));
-        colorMap.put("outline",Color.decode("#45444f"));
+    public static void genMorningstar(String type,int amt, Map<String, Color> colorMap) throws IOException {
 
         for(int i = 0; i<amt; i++){
 
-            int width = 15;
-            int height = 15;
+            int width = 16;
+            int height = 16;
             int[][] pixelMap = new int[width][height];
 
             BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
@@ -109,38 +277,47 @@ public class Main {
 
             genSpike(hiltCoords[0], bufferedImage,colorMap);
 
-            File file = new File("icons/morningstar"+i+".png");
+            colorRamp(bufferedImage,width,height);
+
+            File file;
+            if(amt==1){
+                file = new File("icons/"+type+"_morningstar.png");
+            } else{
+                file = new File("icons/"+type+"_morningstar_"+i+".png");
+            }
+
             ImageIO.write(bufferedImage, "png", file);
         }
+        processJson(type+"_morningstar");
     }
 
-    public static void genSpear(int amt) throws IOException {
-        Map<String,Color> colorMap = new HashMap();
-        colorMap.put("blade_highlight",Color.decode("#b8b5b9"));
-        colorMap.put("blade_base",Color.decode("#868188"));
-        colorMap.put("blade_shadow",Color.decode("#646365"));
-        colorMap.put("hilt_base",Color.decode("#a77b5b"));
-        colorMap.put("hilt_shadow",Color.decode("#80493a"));
-        colorMap.put("jewel",Color.decode("#2555a6"));
-        colorMap.put("outline",Color.decode("#45444f"));
-
+    public static void genSpear(String type,int amt, Map<String, Color> colorMap) throws IOException {
         for(int i = 0; i<amt; i++){
 
-            int width = 15;
-            int height = 15;
+            int width = 16;
+            int height = 16;
             int[][] pixelMap = new int[width][height];
 
             BufferedImage bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
 
-            int[] hiltCoords = genHilt(bufferedImage,10,14,colorMap);
+            int[] hiltCoords = genHilt(bufferedImage,12,14,colorMap);
 
-            int guardLoc = genGuard(hiltCoords,bufferedImage,1,2,colorMap);
+            int guardLoc = genGuard(hiltCoords,bufferedImage,2,3,colorMap);
 
-            genSpearHead(hiltCoords[0], bufferedImage,colorMap);
+            genSpike(guardLoc, bufferedImage,colorMap);
 
-            File file = new File("icons/spear"+i+".png");
+            colorRamp(bufferedImage,width,height);
+
+            File file;
+            if(amt==1){
+                file = new File("icons/"+type+"_spear.png");
+            } else{
+                file = new File("icons/"+type+"_spear_"+i+".png");
+            }
+
             ImageIO.write(bufferedImage, "png", file);
         }
+        processJson(type+"_spear");
     }
 
 
@@ -277,7 +454,7 @@ public class Main {
             g2d.setColor(base);
             g2d.fillRect(x-1,y-1,1,1);
 
-            if(x==2 && hasJewel){
+            if( max > 4 && x==2 && hasJewel){
                 g2d.setColor(jewel);
                 g2d.fillRect(x-1,y,1,1);
                 g2d.setColor(base);
@@ -328,28 +505,26 @@ public class Main {
 
         Graphics2D g2d = bufferedImage.createGraphics();
 
-        int limit = 4+start;
+        int numBases = 4;
+        int[] pattern = new int[numBases];
+        int[][] pixels = new int[numBases][2];
+
+        int limit = numBases+start;
 
         int y = 15-start;
-        for(int x = start-1; x<=limit; x++){
-            if (x == limit){
-                g2d.setColor(base);
-                g2d.fillRect(x,y,1,1);
-                g2d.dispose();
-                return;
-            }
-
-
-            g2d.setColor(base);
-            g2d.fillRect(x,y,1,1);
-            for(int i = 1; i<=3; i++){
-                g2d.setColor(shadow);
-                g2d.fillRect(x+i,y,1,1);
-                g2d.setColor(highlight);
-                g2d.fillRect(x,y-i,1,1);
-            }
+        int place = 0;
+        for(int x = start-1; x<=limit && place<numBases; x++){
+            pixels[place][0] = x;
+            pixels[place][1] = y;
+            pattern[place] = (int) (Math.random()*(5-3)+3);
+            System.out.println("x= "+x+" y="+y+" pat="+pattern[place]);
+            place++;
             y--;
         }
+
+        buildPattern(g2d,pattern,pixels,colorMap);
+
+        g2d.dispose();
     }
 
     public static void genSpearHead(int start, BufferedImage bufferedImage, Map<String, Color> colorMap){
@@ -487,5 +662,31 @@ public class Main {
                 }
             }
         }
+    }
+
+    private static void colorRamp(BufferedImage bufferedImage, int width, int height){
+        Graphics2D g2d = bufferedImage.createGraphics();
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                int rgb = bufferedImage.getRGB(x,y);
+                //I should replace this code with some calculation using vector later, but Im bad at math
+                if(rgb!=0){
+                    if(x>12 && height-y>12){
+                        g2d.setColor(new Color(1f,0.9f,0f,.1f));
+                    }
+                    else if(x>8 && height-y>8){
+                        g2d.setColor(new Color(1f,0.5f,0.5f,.1f));
+                    }
+                    else if(x>4 && height-y>4){
+                        g2d.setColor(new Color(1f,0f,0.7f,.1f));
+                    }
+                    else{
+                        g2d.setColor(new Color(0.7f,0f,1f,.1f));
+                    }
+                    g2d.fillRect(x,y,1,1);
+                }
+            }
+        }
+        g2d.dispose();
     }
 }
