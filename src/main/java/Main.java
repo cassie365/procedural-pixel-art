@@ -11,8 +11,6 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        processJson("wheat_whip");
-
         Map<String,Color> colorMap = new HashMap();
         colorMap.put("blade_highlight",Color.decode("#b8b5b9"));
         colorMap.put("blade_base",Color.decode("#868188"));
@@ -60,6 +58,70 @@ public class Main {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+    public static void makeRecipe(String material,String type){
+        try {
+            // create Gson instance
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+            // create a reader
+            Reader reader = Files.newBufferedReader(Paths.get("recipies/base/"+type+"_base.json"));
+
+            // convert JSON file to map
+            Map<String, Object> map = gson.fromJson(reader, Map.class);
+            Map<String,Map<String,String>> keymap = (Map<String, Map<String, String>>) map.get("key");
+            Map<String,String> result = (Map<String, String>) map.get("result");
+            Map<String,String> item = keymap.get("X");
+            item.put("tag",getItemKey(material));
+            result.put("item","edibleweapons:"+material.toLowerCase()+"_"+type.toLowerCase());
+            keymap.put("X",item);
+            map.put("key",keymap);
+            map.put("result",result);
+            System.out.println(item.get("tag"));
+            System.out.println(result.get("item"));
+
+            // close reader
+            reader.close();
+
+            // create a writer
+            Writer writer = new FileWriter("recipies/"+material.toLowerCase()+"_"+type.toLowerCase()+".json");
+
+            // convert map to JSON File
+            gson.toJson(map, writer);
+
+            // close the writer
+            writer.close();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    private static String getItemKey(String material){
+        String result = "invalid";
+        switch(material){
+            /*
+                "#forge:crops/beetroot",
+                "#forge:crops/carrot",
+                "#forge:crops/nether_wart",
+                "#forge:crops/potato",
+                "#forge:crops/wheat"
+             */
+            case "wheat":
+                result = "forge:crops/wheat";
+                break;
+            case "carrot":
+                result = "forge:crops/carrot";
+                break;
+            case "potato":
+                result = "forge:crops/potato";
+                break;
+            case "beetroot":
+                result = "forge:crops/beetroot";
+                break;
+            default:
+                System.out.println("UNKNOWN");
+        }
+        return result;
     }
 
     public static Map<String,Color> wheatColor(){
@@ -146,6 +208,7 @@ public class Main {
         }
 
         processJson(type+"_long_sword");
+        makeRecipe(type,"long_sword");
     }
 
     public static void genDagger(String type,int amt, Map<String, Color> colorMap) throws IOException {
@@ -176,6 +239,7 @@ public class Main {
         }
 
         processJson(type+"_dagger");
+        makeRecipe(type,"dagger");
     }
 
     public static void genRapier(String type,int amt, Map<String, Color> colorMap) throws IOException {
@@ -207,6 +271,7 @@ public class Main {
         }
 
         processJson(type+"_rapier");
+        makeRecipe(type,"rapier");
     }
 
     public static void genStaff(String type,int amt, Map<String, Color> colorMap) throws IOException {
@@ -234,6 +299,7 @@ public class Main {
         }
 
         processJson(type+"_staff");
+        makeRecipe(type,"staff");
     }
 
     public static void genMace(String type,int amt, Map<String, Color> colorMap) throws IOException {
@@ -261,6 +327,7 @@ public class Main {
             ImageIO.write(bufferedImage, "png", file);
         }
         processJson(type+"_mace");
+        makeRecipe(type,"mace");
     }
 
     public static void genMorningstar(String type,int amt, Map<String, Color> colorMap) throws IOException {
@@ -289,6 +356,7 @@ public class Main {
             ImageIO.write(bufferedImage, "png", file);
         }
         processJson(type+"_morningstar");
+        makeRecipe(type,"morningstar");
     }
 
     public static void genSpear(String type,int amt, Map<String, Color> colorMap) throws IOException {
@@ -318,6 +386,7 @@ public class Main {
             ImageIO.write(bufferedImage, "png", file);
         }
         processJson(type+"_spear");
+        makeRecipe(type,"spear");
     }
 
 
