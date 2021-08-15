@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 public class Main {
+    public static Map<String,String> locale = new HashMap<>();
     public static void main(String[] args) throws IOException {
         Map<String,Color> colorMap = new HashMap();
         colorMap.put("blade_highlight",Color.decode("#b8b5b9"));
