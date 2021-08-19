@@ -1,6 +1,7 @@
-package model.weapons;
+package weapons.model.weapons;
 
-import model.materials.FoodMaterial;
+import weapons.model.materials.FoodMaterial;
+import weapons.util.Shader;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -13,11 +14,11 @@ public class Morningstar extends Weapon {
 
     @Override
     public boolean genImage() throws IOException {
-        int[] hiltCoords = genHilt(bufferedImage,8,10,this.getMaterial().getColorMap());
+        int[] gripCoords = genGrip(bufferedImage,8,10,this.getMaterial().getColorMap());
 
-        genSpike(hiltCoords[0], bufferedImage,this.getMaterial().getColorMap());
+        genSpike(gripCoords, bufferedImage,this.getMaterial().getColorMap());
 
-        colorRamp(this.bufferedImage,Weapon.WIDTH,Weapon.HEIGHT);
+        Shader.colorRamp(this.bufferedImage);
         File file = new File(getImagePath());
 
         ImageIO.write(this.bufferedImage, "png", file);

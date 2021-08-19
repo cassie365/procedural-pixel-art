@@ -1,6 +1,7 @@
-package model.weapons;
+package weapons.model.weapons;
 
-import model.materials.FoodMaterial;
+import weapons.model.materials.FoodMaterial;
+import weapons.util.Shader;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -13,13 +14,13 @@ public class Spear extends Weapon {
 
     @Override
     public boolean genImage() throws IOException {
-        int[] hiltCoords = genHilt(bufferedImage,12,14,this.getMaterial().getColorMap());
+        int[] gripCoords = genGrip(bufferedImage,12,14,this.getMaterial().getColorMap());
 
-        int guardLoc = genGuard(hiltCoords,bufferedImage,2,3,this.getMaterial().getColorMap());
+        int[] guardLoc = genGuard(gripCoords,bufferedImage,2,3,this.getMaterial().getColorMap());
 
         genSpike(guardLoc, bufferedImage,this.getMaterial().getColorMap());
 
-        colorRamp(this.bufferedImage,Weapon.WIDTH,Weapon.HEIGHT);
+        Shader.colorRamp(this.bufferedImage);
         File file = new File(getImagePath());
 
         ImageIO.write(this.bufferedImage, "png", file);

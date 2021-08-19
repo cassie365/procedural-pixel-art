@@ -1,6 +1,7 @@
-package model.weapons;
+package weapons.model.weapons;
 
-import model.materials.FoodMaterial;
+import weapons.model.materials.FoodMaterial;
+import weapons.util.Shader;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -13,9 +14,10 @@ public class Staff extends Weapon {
 
     @Override
     public boolean genImage() throws IOException {
-        genHilt(bufferedImage,12,14,this.getMaterial().getColorMap());
+        genGrip(bufferedImage,12,14,this.getMaterial().getColorMap());
 
-        colorRamp(this.bufferedImage,Weapon.WIDTH,Weapon.HEIGHT);
+        Shader.colorRamp(this.bufferedImage);
+
         File file = new File(getImagePath());
 
         ImageIO.write(this.bufferedImage, "png", file);
