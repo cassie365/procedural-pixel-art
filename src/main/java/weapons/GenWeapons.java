@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import weapons.model.materials.FoodMaterial;
 import weapons.model.weapons.*;
 
+import java.awt.image.BufferedImage;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -18,6 +19,10 @@ public class GenWeapons {
     private static final String modID = "edibleweapons";
 
     public static void main(String[] args) throws IOException {
+        generateWeapons();
+    }
+
+    public static void generateWeapons() throws IOException {
         List<Weapon> weapons = new ArrayList<>();
         for(FoodMaterial f:FoodMaterial.values()){
             weapons.add(new Dagger(f));

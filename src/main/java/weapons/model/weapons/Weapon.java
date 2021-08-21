@@ -3,8 +3,10 @@ package weapons.model.weapons;
 import weapons.model.materials.FoodMaterial;
 import weapons.util.BladePatternBuilder;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
@@ -34,6 +36,11 @@ public abstract class Weapon {
         pixelMap = new int[WIDTH][HEIGHT];
     }
 
+    // TODO: REMOVE
+    public BufferedImage getBufferedImage(){
+        return this.bufferedImage;
+    }
+
     public String getLocaleName() {
         return localeName;
     }
@@ -60,6 +67,142 @@ public abstract class Weapon {
     }
 
     // TODO: Combine the genBlade methods to reduce redundant code
+
+    public static void newGenBlade(int[] startCoords, BufferedImage bufferedImage, int minLength, int maxLength, Map<String, Color> colorMap) throws IOException {
+        Color[] gradient = new Color[6];
+        gradient[0] = colorMap.get("outline");
+        gradient[1] = colorMap.get("blade_shadow2");
+        gradient[2] = colorMap.get("blade_shadow");
+        gradient[3] = colorMap.get("blade_base");
+        gradient[4] = colorMap.get("blade_highlight");
+        gradient[5] = colorMap.get("glare");
+
+        int diagonalLength = (int) (Math.random()*(maxLength-minLength)+minLength);
+
+        Graphics2D g2d = bufferedImage.createGraphics();
+
+        int x = startCoords[0];
+        int y = startCoords[1];
+
+        //We must build the bottom of the sword first. This adds +2 to our blad length
+        g2d.setColor(gradient[0]);
+        g2d.fillRect(x,y-2,3,3);
+        g2d.setColor(gradient[1]);
+        g2d.fillRect(x,y-1,2,2);
+        x++;
+        y--;
+        //Second pre-build chunk of sword
+        g2d.setColor(gradient[0]);
+        g2d.fillRect(x,y-2,3,3);
+        g2d.setColor(gradient[1]);
+        g2d.fillRect(x,y-1,2,2);
+        g2d.setColor(gradient[2]);
+        g2d.fillRect(x,y,1,1);
+        x++;
+        y--;
+
+        for(int i = 0; i<=diagonalLength; i++){
+            g2d.setColor(gradient[1]);
+            g2d.fillRect(x,y-2,3,3);
+            g2d.setColor(gradient[4]);
+            g2d.fillRect(x,y-1,2,2);
+            g2d.setColor(gradient[3]);
+            g2d.fillRect(x,y,1,1);
+            x++;
+            y--;
+        }
+
+        //Cap our sword
+        g2d.setColor(gradient[1]);
+        g2d.fillRect(x,y-2,3,3);
+        g2d.setColor(gradient[5]);
+        g2d.fillRect(x,y-1,2,2);
+        g2d.setColor(gradient[3]);
+        g2d.fillRect(x,y,1,1);
+        x++;
+        y--;
+        //Second pre-build chunk of sword
+        g2d.setColor(gradient[1]);
+        g2d.fillRect(x,y-2,3,3);
+        g2d.setColor(gradient[5]);
+        g2d.fillRect(x,y-1,2,2);
+        g2d.setColor(gradient[4]);
+        g2d.fillRect(x,y,1,1);
+        x++;
+        y--;
+        g2d.setColor(gradient[4]);
+        g2d.fillRect(x,y,1,1);
+
+        g2d.dispose();
+    }
+
+    public static void genRapier(int[] startCoords, BufferedImage bufferedImage, int minLength, int maxLength, Map<String, Color> colorMap){
+        Color[] gradient = new Color[6];
+        gradient[0] = colorMap.get("outline");
+        gradient[1] = colorMap.get("blade_shadow2");
+        gradient[2] = colorMap.get("blade_shadow");
+        gradient[3] = colorMap.get("blade_base");
+        gradient[4] = colorMap.get("blade_highlight");
+        gradient[5] = colorMap.get("glare");
+
+        int diagonalLength = (int) (Math.random()*(maxLength-minLength)+minLength);
+
+        Graphics2D g2d = bufferedImage.createGraphics();
+
+        int x = startCoords[0];
+        int y = startCoords[1];
+
+        //We must build the bottom of the sword first. This adds +2 to our blad length
+        g2d.setColor(gradient[0]);
+        g2d.fillRect(x,y-2,3,3);
+        g2d.setColor(gradient[1]);
+        g2d.fillRect(x,y-1,2,2);
+        x++;
+        y--;
+        //Second pre-build chunk of sword
+        g2d.setColor(gradient[0]);
+        g2d.fillRect(x,y-2,3,3);
+        g2d.setColor(gradient[1]);
+        g2d.fillRect(x,y-1,2,2);
+        g2d.setColor(gradient[2]);
+        g2d.fillRect(x,y,1,1);
+        x++;
+        y--;
+
+        for(int i = 0; i<=diagonalLength; i++){
+            g2d.setColor(gradient[1]);
+            g2d.fillRect(x,y-2,3,3);
+            g2d.setColor(gradient[4]);
+            g2d.fillRect(x,y-1,2,2);
+            g2d.setColor(gradient[3]);
+            g2d.fillRect(x,y,1,1);
+            x++;
+            y--;
+        }
+
+        //Cap our sword
+        g2d.setColor(gradient[1]);
+        g2d.fillRect(x,y-2,3,3);
+        g2d.setColor(gradient[5]);
+        g2d.fillRect(x,y-1,2,2);
+        g2d.setColor(gradient[3]);
+        g2d.fillRect(x,y,1,1);
+        x++;
+        y--;
+        //Second pre-build chunk of sword
+        g2d.setColor(gradient[1]);
+        g2d.fillRect(x,y-2,3,3);
+        g2d.setColor(gradient[5]);
+        g2d.fillRect(x,y-1,2,2);
+        g2d.setColor(gradient[4]);
+        g2d.fillRect(x,y,1,1);
+        x++;
+        y--;
+        g2d.setColor(gradient[4]);
+        g2d.fillRect(x,y,1,1);
+
+        g2d.dispose();
+    }
 
     protected static void genBlade(int[] guardCoords, BufferedImage bufferedImage, int minLength, int maxLength, int thickness, Map<String, Color> colorMap) {
         Color highlight = colorMap.get("blade_highlight");
@@ -136,15 +279,61 @@ public abstract class Weapon {
         int diagonalLength = (int) (Math.random()*(max-min)+min);
         int[][] positionChanges = {{-1,-1},{0,-1},{-1,0}};
         int[][] mirroredPositionChanges = {{1,1},{1,0},{0,1}};
-        ArrayList<Integer[]> shapePixelCoords = new ArrayList<>();
+        ArrayList<Integer[]> pixelCoords = new ArrayList<>();
 
-        int currentX = coords[0]-1;
+        int currentX = coords[0];
         int currentY = coords[1];
-        int reflectX = coords[0]-1;
+        int reflectX = coords[0];
         int reflectY = coords[1];
-        for(int i = 0; i<diagonalLength; i++){
+
+        g2d.setColor(base);
+        g2d.fillRect(currentX,currentY,1,1);
+        pixelCoords.add(new Integer[]{currentX, currentY,0});
+
+        //Get position of guard pixels
+        for(int c = 0;c<diagonalLength;c++){
             //Calculate new pixel
             int selection = (int) (Math.random() * 3);
+            currentX += positionChanges[selection][0];
+            currentY += positionChanges[selection][1];
+            reflectX += mirroredPositionChanges[selection][0];
+            reflectY += mirroredPositionChanges[selection][1];
+
+            //We want to collect the location of each colored pixel to outline them later
+            pixelCoords.add(new Integer[]{currentX, currentY,0});
+            pixelCoords.add(new Integer[]{reflectX, reflectY,1});
+        }
+
+        int[][] outlinePos = {{0,-1},{-1,0},{0,1},{1,0}};
+
+        for(int i = 0; i<pixelCoords.size(); i++){
+            for(int j = 0; j<outlinePos.length; j++){
+                int ox = pixelCoords.get(i)[0];
+                int oy = pixelCoords.get(i)[1];
+                ox+=outlinePos[j][0];
+                oy+=outlinePos[j][1];
+                g2d.setColor(colorMap.get("outline"));
+                g2d.fillRect(ox,oy,1,1);
+            }
+        }
+
+        //Color in the guard
+        for(int d = 0; d<pixelCoords.size(); d++){
+            int px = pixelCoords.get(d)[0];
+            int py = pixelCoords.get(d)[1];
+            if(pixelCoords.get(d)[2]==0){
+                //Color in our pixels
+                g2d.setColor(base);
+                g2d.fillRect(px,py,1,1);
+            }else{
+                g2d.setColor(shadow);
+                g2d.fillRect(px,py,1,1);
+            }
+        }
+
+/*        for(int i = 0; i<diagonalLength; i++){
+            //Calculate new pixel
+            int selection = (int) (Math.random() * 2);
             currentX += positionChanges[selection][0];
             currentY += positionChanges[selection][1];
             reflectX += mirroredPositionChanges[selection][0];
@@ -159,10 +348,14 @@ public abstract class Weapon {
             g2d.fillRect(currentX,currentY,1,1);
             g2d.setColor(shadow);
             g2d.fillRect(reflectX,reflectY,1,1);
+        }*/
+
+        for(Integer[] i:pixelCoords){
+            System.out.println(i[0]+" "+i[1]+" "+i[2]);
         }
 
         //Color outline
-        genOutline(shapePixelCoords,bufferedImage,colorMap);
+        //genOutline(pixelCoords,bufferedImage,colorMap);
 
         g2d.dispose();
 
@@ -189,30 +382,31 @@ public abstract class Weapon {
         int[] finalCoords = null;
         boolean hasPommel = (int) (Math.random() * 100) > 50;
 
-        int y = HEIGHT;
+        int y = HEIGHT-1;
         for(int x = 0; x<=diagonalLength; x++){
             if (x == diagonalLength){
                 g2d.setColor(base);
-                g2d.fillRect(x-1,y,1,1);
+                g2d.fillRect(x,y,1,1);
+                System.out.println("Final Coors Grip x="+x+" y="+y);
                 finalCoords = new int[]{x,y};
                 break;
             }
 
             // Fill in one chunk of the grip
             g2d.setColor(base);
-            g2d.fillRect(x-1,y,1,1);
-            g2d.fillRect(x-1,y-1,1,1);
-            g2d.setColor(shadow);
             g2d.fillRect(x,y,1,1);
+            g2d.fillRect(x,y-1,1,1);
+            g2d.setColor(shadow);
+            g2d.fillRect(x+1,y,1,1);
 
             // We want to see if the grip is tall enough to accomodate the pommel, even if hasPommel true
-            if( max > 4 && x==2 && hasPommel){
+            if( max > 4 && x==1 && hasPommel){
                 g2d.setColor(jewel);
-                g2d.fillRect(x-1,y,1,1);
+                g2d.fillRect(x,y,1,1);
                 g2d.setColor(base);
-                g2d.fillRect(x-2,y-1,1,1);
+                g2d.fillRect(x-1,y-1,1,1);
                 g2d.setColor(shadow);
-                g2d.fillRect(x,y+1,1,1);
+                g2d.fillRect(x+1,y+1,1,1);
             }
 
             y--;
@@ -287,12 +481,13 @@ public abstract class Weapon {
 
         int[][] outlinePos = {{0,-1},{-1,0},{0,1},{1,0}};
 
-        for(Integer[] i: pixels){
+        for(int i = 0; i<pixels.size(); i++){
             for(int j = 0; j<outlinePos.length; j++){
-                int x = i[0];
-                int y = i[1];
+                int x = pixels.get(i)[0];
+                int y = pixels.get(i)[1];
                 x+=outlinePos[j][0];
                 y+=outlinePos[j][1];
+                System.out.println("Contains this set - "+x+" , "+y+" : "+pixels.contains(new Integer[]{x,y}));
                 if(!pixels.contains(new Integer[]{x,y})){
                     g2d.setColor(colorMap.get("outline"));
                     g2d.fillRect(x,y,1,1);

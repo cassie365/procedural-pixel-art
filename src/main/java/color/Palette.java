@@ -35,13 +35,13 @@ public class Palette {
             colors[1] = Color.getHSBColor((color-shift)/360f,sat-interval,bri+interval);         //lighter
             colors[2] = Color.getHSBColor(color/360f,sat,bri);                                             //base
             colors[3] = Color.getHSBColor((color+shift)/360f,sat+interval,bri-interval);         //darker
-            colors[4] = Color.getHSBColor((color+shift*2)/360f,sat+interval*2,bri-interval*2);   //outline
+            colors[4] = Color.getHSBColor((color+shift*2)/360f,sat+interval*4,bri-interval*4);   //outline
         }else{
             colors[0] = Color.getHSBColor((color+shift*2)/360f,sat-interval*2,bri+interval*2);   //highlight
             colors[1] = Color.getHSBColor((color+shift)/360f,sat-interval,bri+interval);         //lighter
             colors[2] = Color.getHSBColor(color/360f,sat,bri);                                             //base
             colors[3] = Color.getHSBColor((color-shift)/360f,sat+interval,bri-interval);         //darker
-            colors[4] = Color.getHSBColor((color-shift*2)/360f,sat+interval*2,bri-interval*2);   //outline
+            colors[4] = Color.getHSBColor((color-shift*2)/360f,sat+interval*4,bri-interval*4);   //outline
         }
 
         return colors;

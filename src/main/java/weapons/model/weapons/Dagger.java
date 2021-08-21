@@ -18,7 +18,7 @@ public class Dagger extends Weapon {
 
         int[] guardCoords = genGuard(hiltCoords,this.bufferedImage,1,3,getMaterial().getColorMap());
 
-        genBlade(guardCoords, this.bufferedImage,4,6,1,getMaterial().getColorMap());
+        newGenBlade(guardCoords, this.bufferedImage,1,2,getMaterial().getColorMap());
 
         Shader.colorRamp(this.bufferedImage);
         File file = new File(getImagePath());

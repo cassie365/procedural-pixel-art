@@ -16,12 +16,13 @@ public class LongSword extends Weapon{
     @Override
     public boolean genImage() throws IOException {
         int[] hiltCoords = genGrip(this.bufferedImage,5,6,getMaterial().getColorMap());
+        int[] bladeStart = new int[]{hiltCoords[0]-1,hiltCoords[1]+1};
 
-        int[] guardCoords = Weapon.genGuard(hiltCoords,this.bufferedImage,3,3,getMaterial().getColorMap());
+        newGenBlade(bladeStart, this.bufferedImage,3,5,getMaterial().getColorMap());
 
-        genBlade(guardCoords, this.bufferedImage,8,10,1,getMaterial().getColorMap());
+        Weapon.genGuard(hiltCoords,this.bufferedImage,4,4,getMaterial().getColorMap());
 
-        Shader.colorRamp(this.bufferedImage);
+        //Shader.colorRamp(this.bufferedImage);
 
         File file = new File(getImagePath());
 
