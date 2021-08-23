@@ -18,7 +18,7 @@ public class LongSword extends Weapon{
         int[] hiltCoords = genGrip(this.bufferedImage,5,6,getMaterial().getColorMap());
         int[] bladeStart = new int[]{hiltCoords[0]-1,hiltCoords[1]+1};
 
-        newGenBlade(bladeStart, this.bufferedImage,3,5,getMaterial().getColorMap());
+        newGenBlade(bladeStart, this.bufferedImage,3,5,1,getMaterial().getColorMap());
 
         Weapon.genGuard(hiltCoords,this.bufferedImage,4,4,getMaterial().getColorMap());
 

@@ -68,7 +68,7 @@ public abstract class Weapon {
 
     // TODO: Combine the genBlade methods to reduce redundant code
 
-    public static void newGenBlade(int[] startCoords, BufferedImage bufferedImage, int minLength, int maxLength, Map<String, Color> colorMap) throws IOException {
+    public static void newGenBlade(int[] startCoords, BufferedImage bufferedImage, int minLength, int maxLength, int width, Map<String, Color> colorMap) throws IOException {
         Color[] gradient = new Color[6];
         gradient[0] = colorMap.get("outline");
         gradient[1] = colorMap.get("blade_shadow2");
@@ -80,6 +80,8 @@ public abstract class Weapon {
         int diagonalLength = (int) (Math.random()*(maxLength-minLength)+minLength);
 
         Graphics2D g2d = bufferedImage.createGraphics();
+
+        int shrinkFactor = 3-1;
 
         int x = startCoords[0];
         int y = startCoords[1];
