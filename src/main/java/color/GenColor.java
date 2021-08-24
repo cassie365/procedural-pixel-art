@@ -5,6 +5,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -16,14 +18,14 @@ public class GenColor {
 
     public static void main(String[] args){
         rainbowSpheres();
-        //int color = (int) (Math.random()*(359-1)+1);
-        int color = 26;
+        int color = (int) (Math.random()*(359-1)+1);
+        //color = 26;
         int sat = 79;
         int bri = 38;
         System.out.println("Color="+color+" Sat=50 Bri=50 Shift=15 Interval=.15f");
         Palette p = new Palette(color,sat,bri,15,.15f);
         try {
-            createBall(p);
+            greyscaleToColor(p);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -42,7 +44,7 @@ public class GenColor {
             int y = 0;
             int counter = 0;
             for(int i = 1; i<=360; i++){
-                p = new Palette(i,80,60,25,.15f);
+                p = new Palette(i,70,70,20,.15f);
                 createBall(p,b,x,y);
 
                 if(counter<=16){
@@ -94,6 +96,10 @@ public class GenColor {
         g2d.setColor(palette[0]);
         g2d.fillOval(26,6,WIDTH-45,WIDTH-45);
 
+        //glare
+        g2d.setColor(palette[5]);
+        g2d.fillOval(28,7,WIDTH-60,WIDTH-60);
+
         File file = new File("generated_colors/test.png");
 
         ImageIO.write(b, "png", file);
@@ -130,6 +136,10 @@ public class GenColor {
         //Last stripe, outline color
         g2d.setColor(palette[0]);
         g2d.fillOval(startx+26,starty+6,width-45,width-45);
+
+        //glare
+        g2d.setColor(palette[5]);
+        g2d.fillOval(startx+28,starty+7,width-60,width-60);
 
         g2d.dispose();
     }
@@ -202,5 +212,60 @@ public class GenColor {
         ImageIO.write(b, "png", file);
 
         g2d.dispose();
+    }
+
+    public static void greyscaleToColor(Palette p) throws IOException {
+        BufferedImage buff = ImageIO.read(new File("generated_colors/grey_sword.png"));
+        BufferedImage buff2 = new BufferedImage(160,16,BufferedImage.TYPE_4BYTE_ABGR);
+        int[] colors = new int[6];
+        Map<Integer,Color> colorMap = new HashMap<>();
+
+        for(int i = 1; i<=6; i++){
+            int clr = buff.getRGB(i, 1);
+            int red =   (clr & 0x00ff0000) >> 16;
+            int green = (clr & 0x0000ff00) >> 8;
+            int blue =   clr & 0x000000ff;
+            System.out.println("Red Color value = " + red);
+            System.out.println("Green Color value = " + green);
+            System.out.println("Blue Color value = " + blue);
+            colors[i-1] = clr;
+        }
+
+        Graphics2D gg = buff2.createGraphics();
+        int width = buff.getWidth();
+        int height = buff.getHeight();
+
+        int curx = 0;
+        for(int i = 0; i<16; i++){
+            Palette pal = new Palette((int) (Math.random()*(359-1)+1),60,60,15,.15f);
+            Color[] palette = pal.getPalette();
+
+            colorMap.put(colors[0],palette[4]);
+            colorMap.put(colors[1],palette[3]);
+            colorMap.put(colors[2],palette[2]);
+            colorMap.put(colors[3],palette[1]);
+            colorMap.put(colors[4],palette[0]);
+            colorMap.put(colors[5],palette[5]);
+
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    int rgb = buff.getRGB(x,y);
+                    Color newColor = colorMap.get(rgb);
+                    System.out.println(newColor);
+                    if(newColor!=null){
+                        gg.setColor(newColor);
+                        gg.fillRect(curx+x,y,1,1);
+                    }
+                }
+            }
+
+            curx+=16;
+        }
+
+        File file = new File("generated_colors/test_swords.png");
+
+        ImageIO.write(buff2, "png", file);
+
+        gg.dispose();
     }
 }
