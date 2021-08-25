@@ -1,5 +1,7 @@
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.PathIterator;
 import java.awt.geom.QuadCurve2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -30,7 +32,7 @@ public class GenBezier {
 
         int currentCell = 0+padding;
         for(int i = -1; i<2; i++){
-            drawBranch(g,center,20,currentCell,currentCell+branchCell,18);
+            drawShrubBranch(g,center,20,currentCell,currentCell+branchCell,18);
             currentCell+=branchCell;
         }
 
@@ -39,7 +41,8 @@ public class GenBezier {
         ImageIO.write(b,"png",f);
     }
 
-    public static void drawBranch(Graphics2D g, int startx, int starty, int minEndX,int maxEndX, int height){
+    public static void drawShrubBranch(Graphics2D g, int startx, int starty, int minEndX,int maxEndX, int height){
+        g.setColor(Color.BLACK);
         int x1 = startx;
         int y1 = starty;
         int x2 = (int) (Math.random()*(maxEndX-minEndX)+minEndX);
@@ -56,6 +59,41 @@ public class GenBezier {
 
         QuadCurve2D s = new QuadCurve2D.Float();
         s.setCurve(x1,y1,ctrlx,ctrly,x2,y2);
+
+        //Select x
+        int newPoint = x1-1;
+        int branchy = y1;
+        for(int i = 0; i<20; i++){
+            if(s.contains(newPoint,i)){
+                branchy = i;
+            }
+        }
+        g.draw(s);
+
+        shade(g,s,x1,y1,ctrlx,ctrly,x2,y2);
+
+        g.setColor(Color.BLACK);
+        s.setCurve(newPoint,branchy,ctrlx,ctrly,x2+4,y2);
+        g.draw(s);
+
+        shade(g,s,newPoint,branchy,ctrlx,ctrly,x2+4,y2);
+
+    }
+
+    public static void shade(Graphics2D g, QuadCurve2D s, int x1, int y1, int ctrlx, int ctrly, int x2, int y2){
+        highlight(g,s,x1,y1,ctrlx,ctrly,x2,y2);
+        shadow(g,s,x1,y1,ctrlx,ctrly,x2,y2);
+    }
+
+    public static void highlight(Graphics2D g, QuadCurve2D s, int x1, int y1, int ctrlx, int ctrly, int x2, int y2){
+        g.setColor(Color.RED);
+        s.setCurve(x1-1,y1,ctrlx-1,ctrly,x2-1,y2);
+        g.draw(s);
+    }
+
+    public static void shadow(Graphics2D g, QuadCurve2D s, int x1, int y1, int ctrlx, int ctrly, int x2, int y2){
+        g.setColor(Color.BLUE);
+        s.setCurve(x1+1,y1,ctrlx+1,ctrly,x2+1,y2);
         g.draw(s);
     }
 }
