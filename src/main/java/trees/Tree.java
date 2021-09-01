@@ -23,15 +23,21 @@ public class Tree {
 
     //These attributes may be useful for modifying trees conditionally in more complex scenes
     private int trunkThickness;
+    private int trunkHeight;
     private int numTrunks;
     private int numBranches;
     private int height;
+    private final int IMG_WIDTH = 31;
+    private final int IMG_HEIGHT = 64;
 
     public Tree(){
-        BufferedImage b = new BufferedImage(20,20,BufferedImage.TYPE_4BYTE_ABGR);
+        trunkThickness = 3;
+        trunkHeight = 20;
+
+        BufferedImage b = new BufferedImage(IMG_WIDTH,IMG_HEIGHT,BufferedImage.TYPE_4BYTE_ABGR);
         Graphics2D g = b.createGraphics();
 
-        drawTree(g,20,20);
+        drawTree(g);
         g.dispose();
 
         toFile(b,new File("tree/trunk-test.png"));
@@ -61,21 +67,8 @@ public class Tree {
         this.height = height;
     }
 
-    private void drawTree(Graphics2D g, int width, int height){
-        //Draw trunks, focus on 1 trunk, slight curve of 1. Should extend all the way to top of height
-        int x1 = width/2;   //center
-        int y1 = height;    //bottom
-
-        int x2 = width/2-1; //center offset 1
-        int y2 = -height; //top of image
-
-        int ctrlx = width/2+x2;
-        int ctrly = height/2;
-
-        g.setColor(Color.BLACK);
-        QuadCurve2D s = new QuadCurve2D.Float();
-        s.setCurve(x1,y1,ctrlx,ctrly,x2,y2);
-        g.draw(s);
+    private void drawTree(Graphics2D g){
+        drawTrunk(g);
     }
 
     private void toFile(BufferedImage b, File output){
@@ -84,5 +77,41 @@ public class Tree {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    private void drawTrunk(Graphics2D g){
+        int middle = IMG_WIDTH/2+1;
+        int layerWidth = trunkThickness;
+        int x = middle-trunkThickness;
+
+        //fill with white to help us see
+        g.setColor(Color.white);
+        g.fillRect(0,0,IMG_WIDTH,IMG_HEIGHT);
+
+        // Start with drawing the base to max
+        g.setColor(Color.green);
+        g.fillRect(x,IMG_HEIGHT-trunkHeight,layerWidth,trunkHeight);
+
+        layerWidth+=2;
+        x--;
+
+        //Draw layer 2
+        int l2_height = getTrunkLayerHeight(trunkHeight,1);
+        g.setColor(Color.cyan);
+        g.fillRect(x,IMG_HEIGHT-l2_height,layerWidth,l2_height);
+
+        layerWidth+=2;
+        x--;
+
+        if(l2_height>trunkHeight/3){
+            //Draw layer3
+            int l3_height = getTrunkLayerHeight(l2_height,1);
+            g.setColor(Color.blue);
+            g.fillRect(x,IMG_HEIGHT-l3_height,layerWidth,l3_height);
+        }
+    }
+
+    private int getTrunkLayerHeight(int base,int min){
+        return (int) (Math.random() * ((base-base/3)-min+1)+min);
     }
 }

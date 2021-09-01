@@ -28,6 +28,7 @@ public class Main {
         genSet("potato", potatoColor());
         genSet("beetroot", beetrootColor());
         //s
+        //d
     }
 
     public static void processJson(String filename) throws FileNotFoundException {
