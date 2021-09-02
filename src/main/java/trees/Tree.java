@@ -80,11 +80,11 @@ public class Tree {
 
 
         drawTrunk(g);
-        int currentCell = 0+padding;
+/*        int currentCell = 0+padding;
         for(int i = -1; i<2; i++){
             drawBranches(g,IMG_WIDTH/2,IMG_HEIGHT-trunkHeight,currentCell,currentCell+branchCell,20);
             currentCell+=branchCell;
-        }
+        }*/
     }
 
     private void toFile(BufferedImage b, File output){
@@ -100,7 +100,7 @@ public class Tree {
      * TODO: Refactor to remove repeated code
      * @param g
      */
-    private void drawTrunk(Graphics2D g){
+    private void drawTrunk(Graphics2D g,int xstart, int xend, int height){
         int middle = IMG_WIDTH/2+1;
         int layerWidth = trunkThickness;
         int x = middle-trunkThickness;
@@ -110,8 +110,6 @@ public class Tree {
         g.fillRect(0,0,IMG_WIDTH,IMG_HEIGHT);
 
         // Start with drawing the base to max
-        g.setColor(Color.green);
-        g.fillRect(x,IMG_HEIGHT-trunkHeight,layerWidth,trunkHeight);
 
         layerWidth+=2;
         x--;
@@ -131,6 +129,21 @@ public class Tree {
             g.fillRect(x,IMG_HEIGHT-l3_height,layerWidth,l3_height);
         }
     }
+
+    /**
+     * Generate an individual trunk layer
+     * NOTE origin = top-left corner of layer, with coords defined by xstart & ystart
+     * @param g the graphics object to draw on
+     * @param xstart the x value to begin drawing
+     * @param ystart the y value to start at
+     * @param height the top-most y value to draw
+     */
+    private void drawTrunkLayer(Graphics2D g, int xstart, int ystart, int width, int height){
+        g.setColor(Color.blue); //Should change later
+        g.fillRect(xstart,ystart,width,height);
+    }
+
+
 
     /**
      * Method which draws branches on tree
